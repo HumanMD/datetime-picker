@@ -1,0 +1,56 @@
+<mat-card>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-3">
+        <h4><b>NGX MAT DATETIME PICKER</b></h4>
+        <app-eqp-date-time-picker
+          [type]="1"
+          [disabled]="disable"
+          (dateChange)="onInputChangeDateTime($event)"
+          [ngModelInput]="dateTimePickerWithTime"
+          [dateTimePlaceholder]="'inserisci una data e un orario'"></app-eqp-date-time-picker>
+        <p>{{ dateTimePickerWithTime }}</p>
+      </div>
+      <div class="col-3">
+        <h4><b>MATERIAL DATE RANGE PICKER</b></h4>
+        <app-eqp-date-time-picker
+          [type]="4"
+          [disabled]="disable"
+          [ngModelInputStart]="fromDate"
+          [ngModelInputEnd]="toDate"
+          [startPlaceholeder]="'data inizio'"
+          [endPlaceholeder]="'data fine'"
+          (dateChange)="onInputChangeRange($event)"></app-eqp-date-time-picker>
+        <p>{{ fromDate }}</p>
+        <p>{{ toDate }}</p>
+      </div>
+      <div class="col-3">
+        <h4><b>NGX MAT TIME PICKER</b></h4>
+        <app-eqp-date-time-picker
+          [type]="3"
+          [disabled]="disable"
+          (dateChange)="onInputChangeTime($event)"
+          [ngModelInputTime]="timePickerInput"
+          [timePlaceholder]="'inserire un orario'"
+          [showSeconds]="true"></app-eqp-date-time-picker>
+        <p>{{ timePickerInput }}</p>
+      </div>
+      <div class="col-3">
+        <h4><b>MATERIAL DATE PICKER</b></h4>
+        <app-eqp-date-time-picker
+          [type]="2"
+          [disabled]="disable"
+          (dateChange)="onInputChangeDate($event)"
+          [ngModelInput]="date"
+          [dateTimePlaceholder]="'inserire una data'"></app-eqp-date-time-picker>
+        <p>{{ date }}</p>
+      </div>
+    </div>
+  </div>
+
+  <button (click)="onClickSaveDate()" type="submit">save date and time</button>
+
+  <button (click)="onClickSaveRange()" type="submit">save date range</button>
+
+  <button (click)="onClickSaveTime()" type="submit">save time</button>
+</mat-card>

@@ -1,0 +1,56 @@
+::ng-deep .custom-ngx-datetime {
+  width: 100% !important;
+  .mat-form-field-infix {
+    position: inherit;
+  }
+  .mat-form-field-suffix {
+    align-self: center;
+    .mat-datepicker-toggle .mat-icon-button span svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
+::ng-deep .custom-mat-date {
+  width: 100% !important;
+  .mat-form-field-infix {
+    display: flex;
+    align-items: center;
+    align-self: flex-end;
+    padding: 0;
+    border-top: 0;
+  }
+}
+
+::ng-deep .custom-ngx-time {
+  width: 100% !important;
+  .mat-form-field-infix {
+    position: inherit;
+  }
+  .mat-form-field-suffix {
+    align-self: center;
+    color: #6c757d;
+  }
+}
+
+::ng-deep .custom-mat-daterange {
+  width: 100% !important;
+  .mat-form-field-infix {
+    display: flex;
+    align-items: center;
+    align-self: flex-end;
+    padding: 0;
+    border-top: 0;
+  }
+}
+
+::ng-deep .custom-template-ngx-mat-timepicker {
+  .ngx-mat-timepicker-table {
+    display: flex;
+    justify-content: center;
+  }
+  .mat-form-field-flex {
+    padding: 0 !important;
+  }
+}
