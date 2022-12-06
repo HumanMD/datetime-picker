@@ -38,20 +38,22 @@ export class AppComponent implements OnInit {
     this.timePickerInput = event;
   }
 
+  startPath: string = "http://localhost:5000/api/Call";
+
   SaveDate(date: Date) {
-    return this.http.post<any>("http://localhost:5000/api/Call/SaveDate", date).toPromise();
+    return this.http.post<any>(this.startPath + "/SaveDate", date).toPromise();
   }
 
   SaveDateTime(date: Date) {
-    return this.http.post<any>("http://localhost:5000/api/Call/SaveDateTime", date).toPromise();
+    return this.http.post<any>(this.startPath + "/SaveDateTime", date).toPromise();
   }
 
   SaveRange(fromDate: Date, toDate: Date) {
-    return this.http.post<any>("http://localhost:5000/api/Call/SaveRange", [fromDate, toDate]).toPromise();
+    return this.http.post<any>(this.startPath + "/SaveRange", [fromDate, toDate]).toPromise();
   }
 
   SaveTime(time: Time) {
-    return this.http.post<any>("http://localhost:5000/api/Call/SaveTime", time).toPromise();
+    return this.http.post<any>(this.startPath + "/SaveTime", time).toPromise();
   }
 
   onClickSaveDate() {
