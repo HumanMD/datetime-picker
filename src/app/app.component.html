@@ -8,7 +8,7 @@
           [disabled]="disable"
           (dateChange)="onInputChangeDateTime($event)"
           [ngModelInput]="dateTimePickerWithTime"
-          [dateTimePlaceholder]="'inserisci una data e un orario'"></app-eqp-date-time-picker>
+          [dateTimePlaceholder]="'dd/mm/yyyy, hh:MM:ss'"></app-eqp-date-time-picker>
         <p>{{ dateTimePickerWithTime }}</p>
       </div>
       <div class="col-3">
@@ -18,8 +18,8 @@
           [disabled]="disable"
           [ngModelInputStart]="fromDate"
           [ngModelInputEnd]="toDate"
-          [startPlaceholeder]="'data inizio'"
-          [endPlaceholeder]="'data fine'"
+          [startPlaceholeder]="'dd/mm/yyyy'"
+          [endPlaceholeder]="'dd/mm/yyyy'"
           (dateChange)="onInputChangeRange($event)"></app-eqp-date-time-picker>
         <p>{{ fromDate }}</p>
         <p>{{ toDate }}</p>
@@ -31,7 +31,7 @@
           [disabled]="disable"
           (dateChange)="onInputChangeTime($event)"
           [ngModelInputTime]="timePickerInput"
-          [timePlaceholder]="'inserire un orario'"
+          [timePlaceholder]="'hh:MM:ss'"
           [showSeconds]="true"></app-eqp-date-time-picker>
         <p>{{ timePickerInput }}</p>
       </div>
@@ -42,15 +42,14 @@
           [disabled]="disable"
           (dateChange)="onInputChangeDate($event)"
           [ngModelInput]="date"
-          [dateTimePlaceholder]="'inserire una data'"></app-eqp-date-time-picker>
+          [dateTimePlaceholder]="'dd/mm/yyyy'"></app-eqp-date-time-picker>
         <p>{{ date }}</p>
       </div>
     </div>
   </div>
 
-  <button (click)="onClickSaveDate()" type="submit">save date and time</button>
-
-  <button (click)="onClickSaveRange()" type="submit">save date range</button>
-
+  <button (click)="onClickSaveDateTime()" type="submit">save dateTime</button>
+  <button (click)="onClickSaveRange()" type="submit">save dateRange</button>
   <button (click)="onClickSaveTime()" type="submit">save time</button>
+  <button (click)="onClickSaveDate()" type="submit">save date</button>
 </mat-card>

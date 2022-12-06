@@ -38,8 +38,12 @@ export class AppComponent implements OnInit {
     this.timePickerInput = event;
   }
 
-  SaveDateAndDateTime(date: Date) {
-    return this.http.post<any>("http://localhost:5000/api/Call/SaveDateAndDateTime", date).toPromise();
+  SaveDate(date: Date) {
+    return this.http.post<any>("http://localhost:5000/api/Call/SaveDate", date).toPromise();
+  }
+
+  SaveDateTime(date: Date) {
+    return this.http.post<any>("http://localhost:5000/api/Call/SaveDateTime", date).toPromise();
   }
 
   SaveRange(fromDate: Date, toDate: Date) {
@@ -47,16 +51,21 @@ export class AppComponent implements OnInit {
   }
 
   SaveTime(time: Time) {
-    return this.http.post<any>("http://localhost:5000/api/Call/SaveTimeHuman", time).toPromise();
+    return this.http.post<any>("http://localhost:5000/api/Call/SaveTime", time).toPromise();
   }
 
   onClickSaveDate() {
     /* MATERIAL DATE PICKER */
     console.log(this.date, "client-input-d");
+    this.SaveDate(this.date)
+      .then((res) => console.log(res, "response"))
+      .catch((error) => console.log(error));
+  }
+
+  onClickSaveDateTime() {
     /* NGX MAT DATETIME PICKER */
     console.log(this.dateTimePickerWithTime, "client-input-dt");
-
-    this.SaveDateAndDateTime(this.date)
+    this.SaveDateTime(this.dateTimePickerWithTime)
       .then((res) => console.log(res, "response"))
       .catch((error) => console.log(error));
   }
@@ -64,7 +73,6 @@ export class AppComponent implements OnInit {
   onClickSaveRange() {
     /* MATERIAL DATE RANGE */
     console.log([this.fromDate, this.toDate], "client-input-dr");
-
     this.SaveRange(this.fromDate, this.toDate)
       .then((res) => console.log(res, "response"))
       .catch((error) => console.log(error));
