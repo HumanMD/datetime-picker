@@ -54,3 +54,13 @@
     padding: 0 !important;
   }
 }
+
+::ng-deep td button.mat-calendar-body-cell {
+  position: absolute !important;
+  height: 100% !important;
+}
+
+::ng-deep td.mat-calendar-body-cell {
+  position: relative !important;
+  height: 0 !important;
+}
