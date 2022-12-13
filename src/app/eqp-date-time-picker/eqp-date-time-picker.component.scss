@@ -5,6 +5,7 @@
   }
   .mat-form-field-suffix {
     align-self: center;
+    padding-right: 10px;
     .mat-datepicker-toggle .mat-icon-button span svg {
       width: 24px;
       height: 24px;
@@ -42,16 +43,6 @@
     align-self: flex-end;
     padding: 0;
     border-top: 0;
-  }
-}
-
-::ng-deep .custom-template-ngx-mat-timepicker {
-  .ngx-mat-timepicker-table {
-    display: flex;
-    justify-content: center;
-  }
-  .mat-form-field-flex {
-    padding: 0 !important;
   }
 }
 

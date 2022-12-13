@@ -3,60 +3,127 @@
   <mat-form-field (click)="DateTimePicker?.open()" floatLabel="never" class="custom-ngx-datetime">
     <input
       matInput
-      (dateChange)="onInputDateChange($event, 1)"
-      [readonly]="true"
       [ngxMatDatetimePicker]="DateTimePicker"
       [(ngModel)]="selectedDateTime"
+      [min]="minDate"
+      [max]="maxDate"
+      (dateChange)="onInputDateChange($event, 1)"
+      [placeholder]="placeholder"
       [disabled]="disabled"
-      readonly
-      [placeholder]="dateTimePlaceholder" />
+      [readonly]="readonlyInput"
+      [required]="isRequired" />
     <mat-datepicker-toggle class="toggle-button" matSuffix [for]="$any(DateTimePicker)"></mat-datepicker-toggle>
     <ngx-mat-datetime-picker
       #DateTimePicker
-      [showSpinners]="true"
-      [showSeconds]="true"
-      [stepHour]="1"
-      [stepMinute]="1"
-      [stepSecond]="1"
-      [touchUi]="false"
-      [disableMinute]="false"
-      [hideTime]="false">
+      [showSpinners]="showSpinners"
+      [showSeconds]="showSeconds"
+      [hideTime]="hideTime"
+      [disabled]="disabled"
+      [disableMinute]="disableMinute"
+      [stepHour]="stepHour"
+      [stepMinute]="stepMinute"
+      [stepSecond]="stepSecond"
+      [color]="color"
+      [enableMeridian]="enableMeridian"
+      [touchUi]="touchUi">
     </ngx-mat-datetime-picker>
   </mat-form-field>
+</div>
+
+<!-- NGX MAT DATETIME PICKER (FORM CONTROL) -->
+<div *ngIf="type == 1 && formGroupInput">
+  <form [formGroup]="formGroupInput">
+    <mat-form-field (click)="DateTimePicker?.open()" floatLabel="never" class="custom-ngx-datetime">
+      <input
+        matInput
+        [ngxMatDatetimePicker]="DateTimePicker"
+        [(ngModel)]="selectedDateTime"
+        [min]="minDate"
+        [max]="maxDate"
+        (dateChange)="onInputDateChange($event, 1)"
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [readonly]="readonlyInput"
+        [formControlName]="formControlNameInput"
+        [required]="isRequired" />
+      <mat-datepicker-toggle class="toggle-button" matSuffix [for]="$any(DateTimePicker)"></mat-datepicker-toggle>
+      <ngx-mat-datetime-picker
+        #DateTimePicker
+        [showSpinners]="showSpinners"
+        [showSeconds]="showSeconds"
+        [hideTime]="hideTime"
+        [disabled]="disabled"
+        [disableMinute]="disableMinute"
+        [stepHour]="stepHour"
+        [stepMinute]="stepMinute"
+        [stepSecond]="stepSecond"
+        [color]="color"
+        [enableMeridian]="enableMeridian"
+        [touchUi]="touchUi">
+      </ngx-mat-datetime-picker>
+    </mat-form-field>
+  </form>
 </div>
 
 <!-- MATERIAL DATE PICKER -->
 <div *ngIf="type == 2">
   <mat-form-field (click)="DatePicker?.open()" floatLabel="never" class="custom-mat-date">
     <input
-      [(ngModel)]="selectedDate"
-      (dateChange)="onInputDateChange($event, 2)"
       matInput
-      [disabled]="disabled"
       [matDatepicker]="DatePicker"
-      readonly
-      [placeholder]="dateTimePlaceholder" />
+      [(ngModel)]="selectedDate"
+      [min]="minDate"
+      [max]="maxDate"
+      (dateChange)="onInputDateChange($event, 1)"
+      [disabled]="disabled"
+      [readonly]="readonlyInput"
+      [required]="isRequired"
+      [placeholder]="placeholder" />
     <mat-datepicker-toggle class="toggle-button" matIconSuffix [for]="DatePicker"></mat-datepicker-toggle>
-    <mat-datepicker #DatePicker></mat-datepicker>
+    <mat-datepicker #DatePicker [disabled]="disabled" [color]="color" [touchUi]="touchUi"></mat-datepicker>
   </mat-form-field>
+</div>
+
+<!-- MATERIAL DATE PICKER (FORM CONTROL) -->
+<div *ngIf="type == 2 && formGroupInput">
+  <form [formGroup]="formGroupInput">
+    <mat-form-field (click)="DatePicker?.open()" floatLabel="never" class="custom-mat-date">
+      <input
+        matInput
+        [matDatepicker]="DatePicker"
+        [(ngModel)]="selectedDate"
+        [min]="minDate"
+        [max]="maxDate"
+        (dateChange)="onInputDateChange($event, 1)"
+        [disabled]="disabled"
+        [readonly]="readonlyInput"
+        [formControlName]="formControlNameInput"
+        [required]="isRequired"
+        [placeholder]="placeholder" />
+      <mat-datepicker-toggle class="toggle-button" matIconSuffix [for]="DatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #DatePicker [disabled]="disabled" [color]="color" [touchUi]="touchUi"></mat-datepicker>
+    </mat-form-field>
+  </form>
 </div>
 
 <!-- NGX MAT TIME PICKER -->
 <div *ngIf="type == 3" class="col-md-12 col-lg-12">
   <mat-form-field (click)="p?.open()" floatLabel="never" class="custom-ngx-time">
     <input
-      (dateChange)="onInputDateChange($event, 3)"
-      readonly
       matInput
-      [disabled]="disabled"
       [(ngModel)]="timePickerInput"
-      placement="bottom"
-      [placeholder]="timePlaceholder" />
+      (dateChange)="onInputDateChange($event, 3)"
+      [disabled]="disabled"
+      [readonly]="readonlyInput"
+      [required]="isRequired"
+      [placeholder]="placeholder"
+      placement="bottom" />
     <mat-icon
+      style="width: 24px; height: 24px; margin-right: 6px"
       (click)="stopProp($event)"
       #p="ngbPopover"
       matSuffix
-      placement="bottom"
+      placement="bottom-end"
       [ngbPopover]="timePickerTemplate"
       [autoClose]="'outside'">
       access_time
@@ -66,12 +133,70 @@
   <ng-template #timePickerTemplate>
     <div style="flex-direction: column; display: flex; align-items: center">
       <ngx-mat-timepicker
-        (click)="stopProp($event)"
-        class="custom-template-ngx-mat-timepicker"
+        #timePickerComponent
+        [showSpinners]="showSpinners"
         [showSeconds]="showSeconds"
+        [disabled]="disabled"
+        [disableMinute]="disableMinute"
+        [stepHour]="stepHour"
+        [stepMinute]="stepMinute"
+        [stepSecond]="stepSecond"
+        [color]="color"
+        [enableMeridian]="enableMeridian"
+        (click)="stopProp($event)"
         [(ngModel)]="timePicker"
-        (ngModelChange)="changeTime($event, showSeconds)"
-        #timePickerComponent></ngx-mat-timepicker>
+        (ngModelChange)="changeTime($event, showSeconds)"></ngx-mat-timepicker>
+      <button
+        style="margin-top: 1em; border-radius: 10px; border: 1px solid #e4e4e4"
+        (click)="setTime(); p.close(); stopProp($event)">
+        <mat-icon>check</mat-icon>
+      </button>
+    </div>
+  </ng-template>
+</div>
+
+<!-- NGX MAT TIME PICKER (FORM CONTROL) -->
+<div *ngIf="type == 3 && formGroupInput" class="col-md-12 col-lg-12">
+  <form [formGroup]="formGroupInput">
+    <mat-form-field (click)="p?.open()" floatLabel="never" class="custom-ngx-time">
+      <input
+        matInput
+        [(ngModel)]="timePickerInput"
+        (dateChange)="onInputDateChange($event, 3)"
+        [disabled]="disabled"
+        [readonly]="readonlyInput"
+        [formControlName]="formControlNameInput"
+        [required]="isRequired"
+        [placeholder]="placeholder"
+        placement="bottom" />
+      <mat-icon
+        style="width: 24px; height: 24px; margin-right: 6px"
+        (click)="stopProp($event)"
+        #p="ngbPopover"
+        matSuffix
+        placement="bottom-end"
+        [ngbPopover]="timePickerTemplate"
+        [autoClose]="'outside'">
+        access_time
+      </mat-icon>
+    </mat-form-field>
+  </form>
+  <ng-template #timePickerTemplate>
+    <div style="flex-direction: column; display: flex; align-items: center">
+      <ngx-mat-timepicker
+        #timePickerComponent
+        [showSpinners]="showSpinners"
+        [showSeconds]="showSeconds"
+        [disabled]="disabled"
+        [disableMinute]="disableMinute"
+        [stepHour]="stepHour"
+        [stepMinute]="stepMinute"
+        [stepSecond]="stepSecond"
+        [color]="color"
+        [enableMeridian]="enableMeridian"
+        (click)="stopProp($event)"
+        [(ngModel)]="timePicker"
+        (ngModelChange)="changeTime($event, showSeconds)"></ngx-mat-timepicker>
       <button
         style="margin-top: 1em; border-radius: 10px; border: 1px solid #e4e4e4"
         (click)="setTime(); p.close(); stopProp($event)">
@@ -86,19 +211,57 @@
   <mat-form-field (click)="DatrRangePicker?.open()" floatLabel="never" class="custom-mat-daterange">
     <mat-date-range-input [rangePicker]="DatrRangePicker">
       <input
-        (dateChange)="onInputDateChange($event, 4, true)"
-        [(ngModel)]="fromDate"
         matStartDate
-        readonly
+        [(ngModel)]="fromDate"
+        [min]="minDate"
+        [max]="maxDate"
+        (dateChange)="onInputDateChange($event, 4, true)"
+        [placeholder]="startPlaceholeder"
         [disabled]="disabled"
-        [placeholder]="startPlaceholeder" />
+        [readonly]="readonlyInput"
+        [required]="isRequired" />
       <input
-        (dateChange)="onInputDateChange($event, 4, false, true)"
-        [(ngModel)]="toDate"
         matEndDate
-        readonly
+        [(ngModel)]="toDate"
+        [min]="minDate"
+        [max]="maxDate"
+        (dateChange)="onInputDateChange($event, 4, false, true)"
+        [placeholder]="endPlaceholeder"
         [disabled]="disabled"
-        [placeholder]="endPlaceholeder" />
+        [readonly]="readonlyInput"
+        [required]="isRequired" />
+    </mat-date-range-input>
+    <mat-datepicker-toggle class="toggle-button" matIconSuffix [for]="DatrRangePicker"></mat-datepicker-toggle>
+    <mat-date-range-picker #DatrRangePicker></mat-date-range-picker>
+  </mat-form-field>
+</div>
+
+<!-- MATERIAL DATE RANGE PICKER (FORM CONTROL) -->
+<div *ngIf="type == 4 && formGroupInput">
+  <mat-form-field (click)="DatrRangePicker?.open()" floatLabel="never" class="custom-mat-daterange">
+    <mat-date-range-input [formGroup]="formGroupInput" [rangePicker]="DatrRangePicker">
+      <input
+        matStartDate
+        [(ngModel)]="fromDate"
+        [min]="minDate"
+        [max]="maxDate"
+        (dateChange)="onInputDateChange($event, 4, true)"
+        [placeholder]="startPlaceholeder"
+        [disabled]="disabled"
+        [readonly]="readonlyInput"
+        [formControlName]="formControlNameStartInput"
+        [required]="isRequired" />
+      <input
+        matEndDate
+        [(ngModel)]="toDate"
+        [min]="minDate"
+        [max]="maxDate"
+        (dateChange)="onInputDateChange($event, 4, false, true)"
+        [placeholder]="endPlaceholeder"
+        [disabled]="disabled"
+        [readonly]="readonlyInput"
+        [formControlName]="formControlNameEndInput"
+        [required]="isRequired" />
     </mat-date-range-input>
     <mat-datepicker-toggle class="toggle-button" matIconSuffix [for]="DatrRangePicker"></mat-datepicker-toggle>
     <mat-date-range-picker #DatrRangePicker></mat-date-range-picker>

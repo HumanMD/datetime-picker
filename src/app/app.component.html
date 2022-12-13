@@ -1,48 +1,53 @@
 <mat-card>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-3">
+      <div class="col-lg-3 col-md-6">
         <h4><b>NGX MAT DATETIME PICKER</b></h4>
         <app-eqp-date-time-picker
           [type]="1"
           [disabled]="disable"
           (dateChange)="onInputChangeDateTime($event)"
           [ngModelInput]="dateTimePickerWithTime"
-          [dateTimePlaceholder]="'dd/mm/yyyy, hh:MM:ss'"></app-eqp-date-time-picker>
+          [placeholder]="''"
+          [isRequired]="true"
+          [showSeconds]="true"></app-eqp-date-time-picker>
         <p>{{ dateTimePickerWithTime }}</p>
       </div>
-      <div class="col-3">
+      <div class="col-lg-3 col-md-6">
         <h4><b>MATERIAL DATE RANGE PICKER</b></h4>
         <app-eqp-date-time-picker
           [type]="4"
           [disabled]="disable"
           [ngModelInputStart]="fromDate"
           [ngModelInputEnd]="toDate"
-          [startPlaceholeder]="'dd/mm/yyyy'"
-          [endPlaceholeder]="'dd/mm/yyyy'"
+          [startPlaceholeder]="''"
+          [endPlaceholeder]="''"
+          [isRequired]="true"
           (dateChange)="onInputChangeRange($event)"></app-eqp-date-time-picker>
         <p>{{ fromDate }}</p>
         <p>{{ toDate }}</p>
       </div>
-      <div class="col-3">
+      <div class="col-lg-3 col-md-6">
         <h4><b>NGX MAT TIME PICKER</b></h4>
         <app-eqp-date-time-picker
           [type]="3"
           [disabled]="disable"
           (dateChange)="onInputChangeTime($event)"
-          [ngModelInputTime]="timePickerInput"
-          [timePlaceholder]="'hh:MM:ss'"
+          [ngModelInput]="timePickerInput"
+          [placeholder]="''"
+          [isRequired]="true"
           [showSeconds]="true"></app-eqp-date-time-picker>
         <p>{{ timePickerInput }}</p>
       </div>
-      <div class="col-3">
+      <div class="col-lg-3 col-md-6">
         <h4><b>MATERIAL DATE PICKER</b></h4>
         <app-eqp-date-time-picker
           [type]="2"
           [disabled]="disable"
           (dateChange)="onInputChangeDate($event)"
           [ngModelInput]="date"
-          [dateTimePlaceholder]="'dd/mm/yyyy'"></app-eqp-date-time-picker>
+          [isRequired]="true"
+          [placeholder]="''"></app-eqp-date-time-picker>
         <p>{{ date }}</p>
       </div>
     </div>
