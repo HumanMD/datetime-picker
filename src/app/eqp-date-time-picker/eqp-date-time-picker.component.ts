@@ -1,14 +1,21 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from "@angular/core";
+import { ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { ThemePalette } from "@angular/material/core";
 import * as moment from "moment";
 
 @Component({
   selector: "app-eqp-date-time-picker",
   templateUrl: "./eqp-date-time-picker.component.html",
-  styleUrls: ["./eqp-date-time-picker.component.scss"]
+  styleUrls: ["./eqp-date-time-picker.component.scss"],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => EqpDateTimePickerComponent),
+      multi: true
+    }
+  ]
 })
-export class EqpDateTimePickerComponent implements OnInit {
+export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor {
   //#region INPUT
 
   /**
@@ -20,13 +27,6 @@ export class EqpDateTimePickerComponent implements OnInit {
    * Imposta l'input come readonly e l'unico modo per selezionare una data è tramite il picker
    */
   @Input("readonlyInput") readonlyInput: boolean = true;
-
-  /**
-   * Imposta l'orairo minimo e massimo selezionabile nel timePicker.
-   * È necessario speceificarli entrambi per poterli usare e devono avere la forma "HH:mm:ss" oppure "HH:mm".
-   */
-  //@Input("minTime") minTime: string | null = null;
-  //@Input("maxTime") maxTime: string | null = null;
 
   /**
    * Imposta la data minima e massima
@@ -116,7 +116,84 @@ export class EqpDateTimePickerComponent implements OnInit {
 
   constructor() {}
 
+  val: any = null;
+  onChange: any = () => {};
+  onTouch: any = () => {};
+
+  writeValue(obj: any): void {
+    this.value = obj;
+  }
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+  registerOnTouched(fn: any): void {
+    this.onTouch = fn;
+  }
+  setDisabledState?(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  set value(val: any) {
+    if ([PickerModeEnum.DATE, PickerModeEnum.DATETIME].includes(this.type)) {
+      val = this.convertDate(val);
+    }
+
+    this.val = val;
+    this.onChange(val);
+    this.onTouch(val);
+  }
+
   ngOnInit(): void {
+    this.setPlaceholder();
+    this.disableComponent();
+  }
+
+  /***
+   * function to track input changes for specific picker mode:
+   * DATE_RANGE
+   * the function update the current value and then emits it
+   **/
+  onInputDateChange(event: any, type: PickerModeEnum, isFrom: boolean = false, isTo: boolean = false) {
+    if (event.value != null) {
+      if (type == PickerModeEnum.DATE_RANGE) {
+        if (
+          this.formGroupInput == null &&
+          (this.formControlNameStartInput == null || this.formControlNameEndInput == null)
+        ) {
+          if (isFrom) {
+            this.fromDate = event.value;
+          } else {
+            this.toDate = event.value;
+            this.dateChange.emit({ fromDate: this.convertDate(this.fromDate), toDate: this.convertDate(this.toDate) });
+          }
+        } else if (
+          this.formGroupInput != null &&
+          this.formControlNameStartInput != null &&
+          this.formControlNameEndInput != null
+        ) {
+        }
+      }
+    }
+  }
+
+  /***
+   * this function update the time string hh:MM or hh:MM:ss
+   **/
+  changeTime(event: Date, showSeconds: boolean) {
+    event = new Date(event);
+    this.tmpTimeInput = showSeconds
+      ? event.getHours() + ":" + event.getMinutes() + ":" + event.getSeconds()
+      : event.getHours() + ":" + event.getMinutes();
+
+    this.writeValue(this.tmpTimeInput);
+  }
+
+  /***
+   * function called on init to set the placeholders based on picker type.
+   * if the picker type is DATE_RANGE and isRequired is true, the endPlaceholeder
+   * ll'have * at the end of it
+   **/
+  setPlaceholder() {
     if (this.type != PickerModeEnum.DATE_RANGE && this.placeholder == "") {
       if (this.type == PickerModeEnum.DATE) this.placeholder = "Seleziona una data";
       else if (this.type == PickerModeEnum.DATETIME) this.placeholder = "Seleziona una data e un orario";
@@ -126,10 +203,12 @@ export class EqpDateTimePickerComponent implements OnInit {
       if (this.endPlaceholeder == "") this.endPlaceholeder = "fine";
       if (this.isRequired) this.endPlaceholeder = this.endPlaceholeder.concat(" *");
     }
+  }
 
-    // Gestisce il disable del componente quando viene usato in una form:
-    //  - se l'input [disable] è diverso da true ma il formControl è disabilitato allora aggiorno il valore dell'input per disabilitare il componente
-    //  - se il componente è stato disabilitato tramite l'attributo [disable] ma il formControl non lo è allora disabilito quest'ultimo
+  /***
+   * manage the daisable of the component when it's used inside a orm group
+   **/
+  disableComponent() {
     if (
       !this.disabled &&
       this.formGroupInput &&
@@ -155,62 +234,6 @@ export class EqpDateTimePickerComponent implements OnInit {
         this.disabled = this.formGroupInput.disabled;
       }
   }
-
-  /***
-   * function to track input changes for specific picker mode:
-   * - DATE
-   * - DATE_RANGE
-   * - DATETIME
-   * for all modes, the function update the current value and then emits it
-   ***/
-  onInputDateChange(event: any, type: PickerModeEnum, isFrom: boolean = false, isTo: boolean = false) {
-    if (event.value != null) {
-      if (type == PickerModeEnum.DATE) {
-        this.selectedDate = event.value;
-        this.dateChange.emit(this.convertDate(this.selectedDate));
-      } else if (type == PickerModeEnum.DATE_RANGE) {
-        if (isFrom) {
-          this.fromDate = event.value;
-        } else {
-          this.toDate = event.value;
-          this.dateChange.emit({ fromDate: this.convertDate(this.fromDate), toDate: this.convertDate(this.toDate) });
-        }
-      } else if (type == PickerModeEnum.DATETIME) {
-        this.selectedDateTime = event.value;
-        this.dateChange.emit(this.convertDate(this.selectedDateTime));
-      }
-    }
-  }
-
-  /***
-   * this function update the time string hh:MM or hh:MM:ss
-   ***/
-  changeTime(event: Date, showSeconds: boolean) {
-    event = new Date(event);
-    this.tmpTimeInput = showSeconds
-      ? event.getHours() + ":" + event.getMinutes() + ":" + event.getSeconds()
-      : event.getHours() + ":" + event.getMinutes();
-  }
-
-  /***
-   * On submit time value, the function emit the final output
-   ***/
-  setTime() {
-    this.timePickerInput = this.tmpTimeInput;
-    this.dateChange.emit(this.timePickerInput);
-  }
-
-  /**
-   * Aggiunge * al placeholder nel caso in cui il campo è obbligatorio.
-   */
-  /* setPlaceholder() {
-    if (this.formControlNameInput && this.formGroupInput && this.formGroupInput.controls[this.formControlNameInput].validator) {
-      const validator = this.formGroupInput.controls[this.formControlNameInput].validator({} as AbstractControl);
-      if (validator && validator.required) {
-        this.isRequired = true;
-      }
-    }
-  } */
 
   //#region HELPER FUNCTIONS
   stopProp(e: Event) {

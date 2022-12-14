@@ -1,6 +1,7 @@
 import { Time } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
 
 @Component({
   selector: "app-root",
@@ -15,6 +16,14 @@ export class AppComponent implements OnInit {
   date: any;
 
   disable = false;
+
+  formGroup = new FormGroup({
+    timePickerInputControl: new FormControl(""),
+    dateTimePickerWithTimeControl: new FormControl(""),
+    fromDateControl: new FormControl(""),
+    toDateControl: new FormControl(""),
+    dateControl: new FormControl("")
+  });
 
   constructor(private http: HttpClient) {}
 

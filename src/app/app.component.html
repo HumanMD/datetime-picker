@@ -1,3 +1,4 @@
+<!-- TEST COMPONENT WITH NGMODEL -->
 <mat-card>
   <div class="container-fluid">
     <div class="row">
@@ -6,8 +7,7 @@
         <app-eqp-date-time-picker
           [type]="1"
           [disabled]="disable"
-          (dateChange)="onInputChangeDateTime($event)"
-          [ngModelInput]="dateTimePickerWithTime"
+          [(ngModel)]="dateTimePickerWithTime"
           [placeholder]="''"
           [isRequired]="true"
           [showSeconds]="true"></app-eqp-date-time-picker>
@@ -32,8 +32,7 @@
         <app-eqp-date-time-picker
           [type]="3"
           [disabled]="disable"
-          (dateChange)="onInputChangeTime($event)"
-          [ngModelInput]="timePickerInput"
+          [(ngModel)]="timePickerInput"
           [placeholder]="''"
           [isRequired]="true"
           [showSeconds]="true"></app-eqp-date-time-picker>
@@ -44,8 +43,7 @@
         <app-eqp-date-time-picker
           [type]="2"
           [disabled]="disable"
-          (dateChange)="onInputChangeDate($event)"
-          [ngModelInput]="date"
+          [(ngModel)]="date"
           [isRequired]="true"
           [placeholder]="''"></app-eqp-date-time-picker>
         <p>{{ date }}</p>
@@ -57,4 +55,62 @@
   <button (click)="onClickSaveRange()" type="submit">save dateRange</button>
   <button (click)="onClickSaveTime()" type="submit">save time</button>
   <button (click)="onClickSaveDate()" type="submit">save date</button>
+</mat-card>
+
+<!-- TEST COMPONENT WIT FORMGRUP -->
+<mat-card>
+  <div class="container-fluid">
+    <form [formGroup]="formGroup">
+      <div class="row">
+        <div class="col-lg-3 col-md-6">
+          <h4><b>NGX MAT DATETIME PICKER</b></h4>
+          <app-eqp-date-time-picker
+            [type]="1"
+            [disabled]="disable"
+            [formGroupInput]="formGroup"
+            formControlNameInput="dateTimePickerWithTimeControl"
+            [placeholder]="''"
+            [isRequired]="true"
+            [showSeconds]="true"></app-eqp-date-time-picker>
+          <p>{{ this.formGroup.get("dateTimePickerWithTimeControl")?.value }}</p>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <h4><b>MATERIAL DATE RANGE PICKER</b></h4>
+          <app-eqp-date-time-picker
+            [type]="4"
+            [disabled]="disable"
+            [formGroupInput]="formGroup"
+            formControlNameStartInput="fromDateControl"
+            formControlNameEndInput="toDateControl"
+            [startPlaceholeder]="''"
+            [endPlaceholeder]="''"
+            [isRequired]="true"
+            (dateChange)="onInputChangeRange($event)"></app-eqp-date-time-picker>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <h4><b>NGX MAT TIME PICKER</b></h4>
+          <app-eqp-date-time-picker
+            [type]="3"
+            [disabled]="disable"
+            [formGroupInput]="formGroup"
+            formControlNameInput="timePickerInputControl"
+            [placeholder]="''"
+            [isRequired]="true"
+            [showSeconds]="true"></app-eqp-date-time-picker>
+          <p>{{ this.formGroup.get("timePickerInputControl")?.value }}</p>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <h4><b>MATERIAL DATE PICKER</b></h4>
+          <app-eqp-date-time-picker
+            [type]="2"
+            [disabled]="disable"
+            [formGroupInput]="formGroup"
+            formControlNameInput="dateControl"
+            [isRequired]="true"
+            [placeholder]="''"></app-eqp-date-time-picker>
+          <p>{{ this.formGroup.get("dateControl")?.value }}</p>
+        </div>
+      </div>
+    </form>
+  </div>
 </mat-card>
