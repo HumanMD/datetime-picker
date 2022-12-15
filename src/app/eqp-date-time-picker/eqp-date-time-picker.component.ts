@@ -174,11 +174,8 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   }
 
   ngOnInit(): void {
-    if (this.type == PickerModeEnum.TIME) {
-      this.changeTime(this.ngModelInput, this.showSeconds);
-    } else {
-      this.onInputDateChange(this.ngModelInput);
-    }
+    this.onInputDateChange(this.ngModelInput);
+
     this.setPlaceholder();
     this.disableComponent();
   }
@@ -207,18 +204,13 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   /***
    * this function update the time string hh:MM or hh:MM:ss
    **/
-  changeTime(event: Date | string | null, showSeconds: boolean) {
-    console.log(event);
-    if (event) {
-      event = new Date(event);
-      this.tmpTimeInput = showSeconds
-        ? event.getHours() + ":" + event.getMinutes() + ":" + event.getSeconds()
-        : event.getHours() + ":" + event.getMinutes();
+  changeTime(event: Date, showSeconds: boolean) {
+    event = new Date(event);
+    this.tmpTimeInput = showSeconds
+      ? event.getHours() + ":" + event.getMinutes() + ":" + event.getSeconds()
+      : event.getHours() + ":" + event.getMinutes();
 
-      this.writeValue(this.tmpTimeInput);
-    } else {
-      this.writeValue(event);
-    }
+    this.writeValue(this.tmpTimeInput);
   }
 
   /***
