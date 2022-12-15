@@ -4,7 +4,8 @@
     <input
       matInput
       [ngxMatDatetimePicker]="DateTimePicker"
-      [(ngModel)]="value"
+      [(ngModel)]="dateTimeInput"
+      (dateChange)="onInputDateChange($event)"
       [min]="minDate"
       [max]="maxDate"
       [placeholder]="placeholder"
@@ -68,7 +69,8 @@
     <input
       matInput
       [matDatepicker]="DatePicker"
-      [(ngModel)]="value"
+      [(ngModel)]="dateTimeInput"
+      (dateChange)="onInputDateChange($event)"
       [min]="minDate"
       [max]="maxDate"
       [disabled]="disabled"
@@ -137,7 +139,7 @@
         [color]="color"
         [enableMeridian]="enableMeridian"
         (click)="stopProp($event)"
-        [(ngModel)]="value"
+        [(ngModel)]="timePickerInput"
         (ngModelChange)="changeTime($event, showSeconds)"></ngx-mat-timepicker>
     </div>
   </ng-template>
@@ -193,20 +195,20 @@
     <mat-date-range-input [rangePicker]="DatrRangePicker">
       <input
         matStartDate
-        [(ngModel)]="value"
+        [(ngModel)]="range.from"
         [min]="minDate"
         [max]="maxDate"
-        (dateChange)="onInputDateChange($event, true)"
+        (dateChange)="onInputDateChange($event)"
         [placeholder]="startPlaceholeder"
         [disabled]="disabled"
         [readonly]="readonlyInput"
         [required]="isRequired" />
       <input
         matEndDate
-        [(ngModel)]="value"
+        [(ngModel)]="range.to"
         [min]="minDate"
         [max]="maxDate"
-        (dateChange)="onInputDateChange($event, false, true)"
+        (dateChange)="onInputDateChange($event)"
         [placeholder]="endPlaceholeder"
         [disabled]="disabled"
         [readonly]="readonlyInput"
@@ -217,7 +219,7 @@
   </mat-form-field>
 </div>
 <!-- MATERIAL DATE RANGE PICKER (FORM CONTROL) -->
-<div *ngIf="type == 4 && formGroupInput">
+<!-- <div *ngIf="type == 4 && formGroupInput">
   <mat-form-field (click)="DatrRangePicker?.open()" floatLabel="never" class="custom-mat-daterange">
     <mat-date-range-input [formGroup]="formGroupInput" [rangePicker]="DatrRangePicker">
       <input
@@ -246,4 +248,4 @@
     <mat-datepicker-toggle class="toggle-button" matIconSuffix [for]="DatrRangePicker"></mat-datepicker-toggle>
     <mat-date-range-picker #DatrRangePicker></mat-date-range-picker>
   </mat-form-field>
-</div>
+</div> -->

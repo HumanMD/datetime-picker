@@ -7,7 +7,7 @@
         <app-eqp-date-time-picker
           [type]="1"
           [disabled]="disable"
-          [(ngModel)]="dateTimePickerWithTime"
+          [(ngModelInput)]="dateTimePickerWithTime"
           [placeholder]="''"
           [isRequired]="true"
           [showSeconds]="true"></app-eqp-date-time-picker>
@@ -18,7 +18,7 @@
         <app-eqp-date-time-picker
           [type]="4"
           [disabled]="disable"
-          [(ngModel)]="range"
+          [(ngModelInput)]="range"
           [startPlaceholeder]="''"
           [endPlaceholeder]="''"
           [isRequired]="true"></app-eqp-date-time-picker>
@@ -30,7 +30,7 @@
         <app-eqp-date-time-picker
           [type]="3"
           [disabled]="disable"
-          [(ngModel)]="timePickerInput"
+          [(ngModelInput)]="timePickerInput"
           [placeholder]="''"
           [isRequired]="true"
           [showSeconds]="true"></app-eqp-date-time-picker>
@@ -41,7 +41,7 @@
         <app-eqp-date-time-picker
           [type]="2"
           [disabled]="disable"
-          [(ngModel)]="date"
+          [(ngModelInput)]="date"
           [isRequired]="true"
           [placeholder]="''"></app-eqp-date-time-picker>
         <p>{{ date }}</p>
@@ -56,7 +56,7 @@
 </mat-card>
 
 <!-- TEST COMPONENT WIT FORMGRUP -->
-<mat-card>
+<!-- <mat-card>
   <div class="container-fluid">
     <form [formGroup]="formGroup">
       <div class="row">
@@ -64,6 +64,7 @@
           <h4><b>NGX MAT DATETIME PICKER</b></h4>
           <app-eqp-date-time-picker
             [type]="1"
+            [initialValue]="dateTimePickerWithTime"
             [disabled]="disable"
             [formGroupInput]="formGroup"
             formControlNameInput="dateTimePickerWithTimeControl"
@@ -112,4 +113,4 @@
       </div>
     </form>
   </div>
-</mat-card>
+</mat-card> -->

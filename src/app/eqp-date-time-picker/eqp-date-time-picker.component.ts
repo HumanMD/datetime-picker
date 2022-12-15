@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, OnInit, 
 import { ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { ThemePalette } from "@angular/material/core";
 import * as moment from "moment";
+import { BehaviorSubject } from "rxjs";
 
 @Component({
   selector: "app-eqp-date-time-picker",
@@ -76,6 +77,11 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   @Input("ngModelInput") ngModelInput: Date | string | null = null;
 
   /**
+   * ngModel da bindare nel campo di input della data/data e orario/orario
+   */
+  @Input("initialValue") initialValue: Date | string | null = null;
+
+  /**
    * Input dei componenti ngx-mat-datetime-picker e ngx-mat-timepicker.
    * Per dettagli seguire la guida al link: "https://www.npmjs.com/package/@angular-material-components/datetime-picker"
    */
@@ -92,36 +98,50 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   @Input("touchUi") touchUi: boolean = false;
   hideTime: boolean = false;
 
+  private _data = new BehaviorSubject<any[]>([]);
+
+  // change data to use getter and setter
+  @Input()
+  set data(value) {
+    // set the latest value for _data BehaviorSubject
+    this._data.next(value);
+  }
+
+  get data() {
+    // get the latest value from _data BehaviorSubject
+    return this._data.getValue();
+  }
+
   //#endregion
 
   //#region OUTPUT
 
   @Output() dateChange: EventEmitter<any> = new EventEmitter<any>();
 
+  @Output() ngModelInputChange: EventEmitter<Date | string | number> = new EventEmitter<Date | string | number>();
+
   //#endregion
 
   //#region INSERTED INPUT TRACKET
 
-  /* Date and DateTime trackers */
-  selectedDate?: Date | null | undefined;
-  fromDate?: Date | null;
-  toDate?: Date | null;
+  /* input trackers */
   range: { from: Date | null; to: Date | null } = { from: null, to: null };
+  dateTimeInput: Date | null = null;
 
-  /* time trackers */
+  timePickerInput: string | null = null;
   tmpTimeInput: string | null | undefined = undefined;
 
   //#endregion
   constructor(private cd: ChangeDetectorRef) {}
 
   val: any = null;
-  onChange: any = () => {
-    this.cd.detectChanges();
+  onChange: any = (event: any) => {
+    //this.cd.detectChanges();
   };
   onTouch: any = () => {};
 
   writeValue(obj: any): void {
-    if (obj) this.value = obj;
+    this.value = obj;
   }
   registerOnChange(fn: any): void {
     this.onChange = fn;
@@ -140,14 +160,25 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
       val.from = this.convertDate(val?.from);
       val.to = this.convertDate(val?.to);
     }
+
     this.val = val;
     this.onChange(val);
     this.onTouch(val);
+
+    if (this.ngModelInputChange != null && this.type != PickerModeEnum.DATE_RANGE) {
+      this.ngModelInput = this.val;
+      this.ngModelInputChange.emit(this.val);
+      /* if (this.emitValueChange)
+        this.onDateChange.emit(this.val) */
+    }
   }
 
   ngOnInit(): void {
-    console.log(this.value);
-    //this.onChange();
+    if (this.type == PickerModeEnum.TIME) {
+      this.changeTime(this.ngModelInput, this.showSeconds);
+    } else {
+      this.onInputDateChange(this.ngModelInput);
+    }
     this.setPlaceholder();
     this.disableComponent();
   }
@@ -155,25 +186,39 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   /***
    * function to track input changes for DATE_RANGE picker mode:
    **/
-  onInputDateChange(event: any, isFrom: boolean = false, isTo: boolean = false) {
-    if (isFrom) {
-      this.range.from = event.value;
-    } else {
-      this.range.to = event.value;
+  onInputDateChange(event: any) {
+    if (this.type == PickerModeEnum.DATE_RANGE) {
+      if (event.from && event.to) {
+        this.range = event;
+        this.writeValue(this.range);
+      } else {
+        this.writeValue(event.value);
+      }
+    } else if (this.type == PickerModeEnum.DATETIME || this.type == PickerModeEnum.DATE) {
+      if (event.value) {
+        this.writeValue(event.value);
+      } else {
+        this.dateTimeInput = event;
+        this.writeValue(this.dateTimeInput);
+      }
     }
-    this.writeValue(this.range);
   }
 
   /***
    * this function update the time string hh:MM or hh:MM:ss
    **/
-  changeTime(event: Date, showSeconds: boolean) {
-    event = new Date(event);
-    this.tmpTimeInput = showSeconds
-      ? event.getHours() + ":" + event.getMinutes() + ":" + event.getSeconds()
-      : event.getHours() + ":" + event.getMinutes();
+  changeTime(event: Date | string | null, showSeconds: boolean) {
+    console.log(event);
+    if (event) {
+      event = new Date(event);
+      this.tmpTimeInput = showSeconds
+        ? event.getHours() + ":" + event.getMinutes() + ":" + event.getSeconds()
+        : event.getHours() + ":" + event.getMinutes();
 
-    this.writeValue(this.tmpTimeInput);
+      this.writeValue(this.tmpTimeInput);
+    } else {
+      this.writeValue(event);
+    }
   }
 
   /***
