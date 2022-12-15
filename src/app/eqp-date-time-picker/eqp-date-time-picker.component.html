@@ -193,20 +193,20 @@
     <mat-date-range-input [rangePicker]="DatrRangePicker">
       <input
         matStartDate
-        [(ngModel)]="fromDate"
+        [(ngModel)]="value"
         [min]="minDate"
         [max]="maxDate"
-        (dateChange)="onInputDateChange($event, 4, true)"
+        (dateChange)="onInputDateChange($event, true)"
         [placeholder]="startPlaceholeder"
         [disabled]="disabled"
         [readonly]="readonlyInput"
         [required]="isRequired" />
       <input
         matEndDate
-        [(ngModel)]="toDate"
+        [(ngModel)]="value"
         [min]="minDate"
         [max]="maxDate"
-        (dateChange)="onInputDateChange($event, 4, false, true)"
+        (dateChange)="onInputDateChange($event, false, true)"
         [placeholder]="endPlaceholeder"
         [disabled]="disabled"
         [readonly]="readonlyInput"
@@ -222,25 +222,25 @@
     <mat-date-range-input [formGroup]="formGroupInput" [rangePicker]="DatrRangePicker">
       <input
         matStartDate
-        [(ngModel)]="fromDate"
+        [(ngModel)]="value"
         [min]="minDate"
         [max]="maxDate"
-        (dateChange)="onInputDateChange($event, 4, true)"
+        (dateChange)="onInputDateChange($event, true)"
         [placeholder]="startPlaceholeder"
         [disabled]="disabled"
         [readonly]="readonlyInput"
-        [formControlName]="formControlNameStartInput"
+        [formControlName]="formControlNameInputStart"
         [required]="isRequired" />
       <input
         matEndDate
-        [(ngModel)]="toDate"
+        [(ngModel)]="value"
         [min]="minDate"
         [max]="maxDate"
-        (dateChange)="onInputDateChange($event, 4, false, true)"
+        (dateChange)="onInputDateChange($event, false, true)"
         [placeholder]="endPlaceholeder"
         [disabled]="disabled"
         [readonly]="readonlyInput"
-        [formControlName]="formControlNameEndInput"
+        [formControlName]="formControlNameInputEnd"
         [required]="isRequired" />
     </mat-date-range-input>
     <mat-datepicker-toggle class="toggle-button" matIconSuffix [for]="DatrRangePicker"></mat-datepicker-toggle>

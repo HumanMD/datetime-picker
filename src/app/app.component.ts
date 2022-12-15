@@ -9,20 +9,18 @@ import { FormControl, FormGroup } from "@angular/forms";
   styleUrls: ["./app.component.scss"]
 })
 export class AppComponent implements OnInit {
-  timePickerInput: string = "";
-  dateTimePickerWithTime: any;
-  fromDate: any;
-  toDate: any;
-  date: any;
-
+  timePickerInput: string | Date = "14:11:13";
+  dateTimePickerWithTime: Date | null = new Date();
+  date: Date | null = new Date();
+  range: { from: Date | null; to: Date | null } | null = { from: new Date(), to: new Date() };
   disable = false;
 
   formGroup = new FormGroup({
-    timePickerInputControl: new FormControl(""),
-    dateTimePickerWithTimeControl: new FormControl(""),
-    fromDateControl: new FormControl(""),
-    toDateControl: new FormControl(""),
-    dateControl: new FormControl("")
+    timePickerInputControl: new FormControl(this.timePickerInput),
+    dateTimePickerWithTimeControl: new FormControl(this.dateTimePickerWithTime),
+    dateRangeControlStart: new FormControl(this.range?.from),
+    dateRangeControlEnd: new FormControl(this.range?.to),
+    dateControl: new FormControl(this.date)
   });
 
   constructor(private http: HttpClient) {}
@@ -30,22 +28,6 @@ export class AppComponent implements OnInit {
   ngOnInit() {}
 
   /* new components functions */
-  onInputChangeDate(event: Date) {
-    this.date = event;
-  }
-
-  onInputChangeRange(event: { fromDate: Date; toDate: Date }) {
-    this.fromDate = event?.fromDate;
-    this.toDate = event?.toDate;
-  }
-
-  onInputChangeDateTime(event: Date) {
-    this.dateTimePickerWithTime = event;
-  }
-
-  onInputChangeTime(event: any) {
-    this.timePickerInput = event;
-  }
 
   startPath: string = "http://localhost:5000/api/Call";
 
@@ -57,8 +39,8 @@ export class AppComponent implements OnInit {
     return this.http.post<any>(this.startPath + "/SaveDateTime", date).toPromise();
   }
 
-  SaveRange(fromDate: Date, toDate: Date) {
-    return this.http.post<any>(this.startPath + "/SaveRange", [fromDate, toDate]).toPromise();
+  SaveRange(range: Object) {
+    return this.http.post<any>(this.startPath + "/SaveRange", range).toPromise();
   }
 
   SaveTime(time: Time) {
@@ -68,35 +50,36 @@ export class AppComponent implements OnInit {
   onClickSaveDate() {
     /* MATERIAL DATE PICKER */
     console.log(this.date, "client-input-d");
-    this.SaveDate(this.date)
+    /* this.SaveDate(this.date)
       .then((res) => console.log(res, "response"))
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error)); */
   }
 
   onClickSaveDateTime() {
     /* NGX MAT DATETIME PICKER */
     console.log(this.dateTimePickerWithTime, "client-input-dt");
-    this.SaveDateTime(this.dateTimePickerWithTime)
+    /* this.SaveDateTime(this.dateTimePickerWithTime)
       .then((res) => console.log(res, "response"))
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error)); */
   }
 
   onClickSaveRange() {
     /* MATERIAL DATE RANGE */
-    console.log([this.fromDate, this.toDate], "client-input-dr");
-    this.SaveRange(this.fromDate, this.toDate)
+
+    console.log(this.range, "client-input-dr");
+    /* this.SaveRange(this.range)
       .then((res) => console.log(res, "response"))
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error)); */
   }
 
   onClickSaveTime() {
     /* NGX MAT TIME */
-    var timeTokens: number[] = this.timePickerInput.split(":").map((e) => Number(e));
+    /* var timeTokens: number[] = this.timePickerInput.split(":").map((e) => Number(e));
     const tmpTime = { hours: timeTokens[0], minutes: timeTokens[1] };
     console.log(tmpTime, "client-input-t");
 
     this.SaveTime(tmpTime)
       .then((res) => console.log(res, "response"))
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error)); */
   }
 }

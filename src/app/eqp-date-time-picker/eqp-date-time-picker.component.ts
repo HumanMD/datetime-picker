@@ -1,4 +1,4 @@
-import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, OnInit, Output } from "@angular/core";
 import { ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { ThemePalette } from "@angular/material/core";
 import * as moment from "moment";
@@ -45,12 +45,19 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   @Input("formGroupInput") formGroupInput: FormGroup | null = null;
 
   /**
-   * Nome del formControlName da utilizzare, nel caso del date-range sarà necessario usare
-   * gli ultimi due input e non il primo
+   * Nome del formControl da utilizzare (in tutti i casi tranne che per RANGE_DATE)
    */
   @Input("formControlNameInput") formControlNameInput: string | null = null;
-  @Input("formControlNameStartInput") formControlNameStartInput: string | null = null;
-  @Input("formControlNameEndInput") formControlNameEndInput: string | null = null;
+
+  /**
+   * Nome del formControlName da utilizzare per RANGE_DATE
+   */
+  @Input("formControlNameInputStart") formControlNameInputStart: string | null = null;
+
+  /**
+   * Nome del formControlName da utilizzare per RANGE_DATE
+   */
+  @Input("formControlNameInputEnd") formControlNameInputEnd: string | null = null;
 
   /**
    * Placeholder visualizzato nel campo di input della data/data e orario/orario.
@@ -67,12 +74,6 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
    * ngModel da bindare nel campo di input della data/data e orario/orario
    */
   @Input("ngModelInput") ngModelInput: Date | string | null = null;
-
-  /**
-   * ngModel da bindare nel campo di input del range di date
-   */
-  @Input("ngModelInputStart") ngModelInputStart: Date | null = null;
-  @Input("ngModelInputEnd") ngModelInputEnd: Date | null = null;
 
   /**
    * Input dei componenti ngx-mat-datetime-picker e ngx-mat-timepicker.
@@ -102,26 +103,25 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   //#region INSERTED INPUT TRACKET
 
   /* Date and DateTime trackers */
-  selectedDate?: Date | null;
+  selectedDate?: Date | null | undefined;
   fromDate?: Date | null;
   toDate?: Date | null;
-  selectedDateTime?: Date | null;
+  range: { from: Date | null; to: Date | null } = { from: null, to: null };
 
   /* time trackers */
-  timePickerInput: string = "";
-  tmpTimeInput: string = "";
-  timePicker: any;
+  tmpTimeInput: string | null | undefined = undefined;
 
   //#endregion
-
-  constructor() {}
+  constructor(private cd: ChangeDetectorRef) {}
 
   val: any = null;
-  onChange: any = () => {};
+  onChange: any = () => {
+    this.cd.detectChanges();
+  };
   onTouch: any = () => {};
 
   writeValue(obj: any): void {
-    this.value = obj;
+    if (obj) this.value = obj;
   }
   registerOnChange(fn: any): void {
     this.onChange = fn;
@@ -136,44 +136,32 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   set value(val: any) {
     if ([PickerModeEnum.DATE, PickerModeEnum.DATETIME].includes(this.type)) {
       val = this.convertDate(val);
+    } else if (this.type == PickerModeEnum.DATE_RANGE && val?.from && val?.to) {
+      val.from = this.convertDate(val?.from);
+      val.to = this.convertDate(val?.to);
     }
-
     this.val = val;
     this.onChange(val);
     this.onTouch(val);
   }
 
   ngOnInit(): void {
+    console.log(this.value);
+    //this.onChange();
     this.setPlaceholder();
     this.disableComponent();
   }
 
   /***
-   * function to track input changes for specific picker mode:
-   * DATE_RANGE
-   * the function update the current value and then emits it
+   * function to track input changes for DATE_RANGE picker mode:
    **/
-  onInputDateChange(event: any, type: PickerModeEnum, isFrom: boolean = false, isTo: boolean = false) {
-    if (event.value != null) {
-      if (type == PickerModeEnum.DATE_RANGE) {
-        if (
-          this.formGroupInput == null &&
-          (this.formControlNameStartInput == null || this.formControlNameEndInput == null)
-        ) {
-          if (isFrom) {
-            this.fromDate = event.value;
-          } else {
-            this.toDate = event.value;
-            this.dateChange.emit({ fromDate: this.convertDate(this.fromDate), toDate: this.convertDate(this.toDate) });
-          }
-        } else if (
-          this.formGroupInput != null &&
-          this.formControlNameStartInput != null &&
-          this.formControlNameEndInput != null
-        ) {
-        }
-      }
+  onInputDateChange(event: any, isFrom: boolean = false, isTo: boolean = false) {
+    if (isFrom) {
+      this.range.from = event.value;
+    } else {
+      this.range.to = event.value;
     }
+    this.writeValue(this.range);
   }
 
   /***
@@ -209,30 +197,12 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
    * manage the daisable of the component when it's used inside a orm group
    **/
   disableComponent() {
-    if (
-      !this.disabled &&
-      this.formGroupInput &&
-      (this.formControlNameInput || (this.formControlNameStartInput && this.formControlNameEndInput))
-    ) {
+    if (!this.disabled && this.formGroupInput && this.formControlNameInput) {
       if (this.formControlNameInput)
         this.disabled =
           this.formGroupInput.disabled || this.formGroupInput.controls[this.formControlNameInput].disabled;
-      else if (this.formControlNameStartInput && this.formControlNameEndInput) {
-        this.disabled =
-          this.formGroupInput.disabled || this.formGroupInput.controls[this.formControlNameStartInput].disabled;
-        this.disabled =
-          this.formGroupInput.disabled || this.formGroupInput.controls[this.formControlNameEndInput].disabled;
-      }
-    } else if (
-      this.disabled &&
-      this.formGroupInput &&
-      (this.formControlNameInput || (this.formControlNameStartInput && this.formControlNameEndInput))
-    )
+    } else if (this.disabled && this.formGroupInput && this.formControlNameInput)
       if (this.formControlNameInput) this.disabled = this.formGroupInput.disabled;
-      else if (this.formControlNameStartInput && this.formControlNameEndInput) {
-        this.disabled = this.formGroupInput.disabled;
-        this.disabled = this.formGroupInput.disabled;
-      }
   }
 
   //#region HELPER FUNCTIONS
