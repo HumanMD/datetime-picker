@@ -2,7 +2,7 @@
 <mat-card>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-3 col-md-6">
+      <!-- <div class="col-lg-3 col-md-6">
         <h4><b>NGX MAT DATETIME PICKER</b></h4>
         <app-eqp-date-time-picker
           [type]="1"
@@ -12,8 +12,8 @@
           [isRequired]="true"
           [showSeconds]="true"></app-eqp-date-time-picker>
         <p>{{ dateTimePickerWithTime }}</p>
-      </div>
-      <div class="col-lg-3 col-md-6">
+      </div> -->
+      <!-- <div class="col-lg-3 col-md-6">
         <h4><b>MATERIAL DATE RANGE PICKER</b></h4>
         <app-eqp-date-time-picker
           [type]="4"
@@ -24,7 +24,7 @@
           [isRequired]="true"></app-eqp-date-time-picker>
         <p>{{ range?.from }}</p>
         <p>{{ range?.to }}</p>
-      </div>
+      </div> -->
       <div class="col-lg-3 col-md-6">
         <h4><b>NGX MAT TIME PICKER</b></h4>
         <app-eqp-date-time-picker
@@ -36,7 +36,7 @@
           [showSeconds]="true"></app-eqp-date-time-picker>
         <p>{{ timePickerInput }}</p>
       </div>
-      <div class="col-lg-3 col-md-6">
+      <!-- <div class="col-lg-3 col-md-6">
         <h4><b>MATERIAL DATE PICKER</b></h4>
         <app-eqp-date-time-picker
           [type]="2"
@@ -45,18 +45,18 @@
           [isRequired]="true"
           [placeholder]="''"></app-eqp-date-time-picker>
         <p>{{ date }}</p>
-      </div>
+      </div> -->
     </div>
   </div>
 
-  <button (click)="onClickSaveDateTime()" type="submit">save dateTime</button>
+  <!-- <button (click)="onClickSaveDateTime()" type="submit">save dateTime</button>
   <button (click)="onClickSaveRange()" type="submit">save dateRange</button>
   <button (click)="onClickSaveTime()" type="submit">save time</button>
-  <button (click)="onClickSaveDate()" type="submit">save date</button>
+  <button (click)="onClickSaveDate()" type="submit">save date</button> -->
 </mat-card>
 
 <!-- TEST COMPONENT WIT FORMGRUP -->
-<!-- <mat-card>
+<mat-card>
   <div class="container-fluid">
     <form [formGroup]="formGroup">
       <div class="row">
@@ -64,7 +64,6 @@
           <h4><b>NGX MAT DATETIME PICKER</b></h4>
           <app-eqp-date-time-picker
             [type]="1"
-            [initialValue]="dateTimePickerWithTime"
             [disabled]="disable"
             [formGroupInput]="formGroup"
             formControlNameInput="dateTimePickerWithTimeControl"
@@ -73,7 +72,7 @@
             [showSeconds]="true"></app-eqp-date-time-picker>
           <p>{{ this.formGroup.get("dateTimePickerWithTimeControl")?.value }}</p>
         </div>
-        <div class="col-lg-3 col-md-6">
+        <!-- <div class="col-lg-3 col-md-6">
           <h4><b>MATERIAL DATE RANGE PICKER</b></h4>
           <app-eqp-date-time-picker
             [type]="4"
@@ -86,7 +85,7 @@
             [isRequired]="true"></app-eqp-date-time-picker>
           <p>{{ this.formGroup.get("dateRangeControlStart")?.value }}</p>
           <p>{{ this.formGroup.get("dateRangeControlEnd")?.value }}</p>
-        </div>
+        </div> -->
         <div class="col-lg-3 col-md-6">
           <h4><b>NGX MAT TIME PICKER</b></h4>
           <app-eqp-date-time-picker
@@ -99,7 +98,7 @@
             [showSeconds]="true"></app-eqp-date-time-picker>
           <p>{{ this.formGroup.get("timePickerInputControl")?.value }}</p>
         </div>
-        <div class="col-lg-3 col-md-6">
+        <!-- <div class="col-lg-3 col-md-6">
           <h4><b>MATERIAL DATE PICKER</b></h4>
           <app-eqp-date-time-picker
             [type]="2"
@@ -109,8 +108,8 @@
             [isRequired]="true"
             [placeholder]="''"></app-eqp-date-time-picker>
           <p>{{ this.formGroup.get("dateControl")?.value }}</p>
-        </div>
+        </div> -->
       </div>
     </form>
   </div>
-</mat-card> -->
+</mat-card>

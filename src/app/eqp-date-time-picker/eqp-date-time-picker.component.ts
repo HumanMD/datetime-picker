@@ -128,7 +128,6 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   range: { from: Date | null; to: Date | null } = { from: null, to: null };
   dateTimeInput: Date | null = null;
 
-  timePickerInput: string | null = null;
   tmpTimeInput: string | null | undefined = undefined;
 
   //#endregion
@@ -136,7 +135,7 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
 
   val: any = null;
   onChange: any = (event: any) => {
-    //this.cd.detectChanges();
+    this.cd.detectChanges();
   };
   onTouch: any = () => {};
 
@@ -156,9 +155,13 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   set value(val: any) {
     if ([PickerModeEnum.DATE, PickerModeEnum.DATETIME].includes(this.type)) {
       val = this.convertDate(val);
-    } else if (this.type == PickerModeEnum.DATE_RANGE && val?.from && val?.to) {
-      val.from = this.convertDate(val?.from);
-      val.to = this.convertDate(val?.to);
+    } else if (this.type == PickerModeEnum.DATE_RANGE && val) {
+      if (val?._d) {
+        val.utc(true);
+      } else {
+        val.from = this.convertDate(val.from);
+        val.to = this.convertDate(val.to);
+      }
     }
 
     this.val = val;
@@ -168,36 +171,38 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
     if (this.ngModelInputChange != null && this.type != PickerModeEnum.DATE_RANGE) {
       this.ngModelInput = this.val;
       this.ngModelInputChange.emit(this.val);
-      /* if (this.emitValueChange)
-        this.onDateChange.emit(this.val) */
     }
   }
 
   ngOnInit(): void {
     this.onInputDateChange(this.ngModelInput);
-
     this.setPlaceholder();
     this.disableComponent();
+    this.cd.detectChanges();
   }
 
   /***
    * function to track input changes for DATE_RANGE picker mode:
    **/
   onInputDateChange(event: any) {
-    if (this.type == PickerModeEnum.DATE_RANGE) {
-      if (event.from && event.to) {
-        this.range = event;
-        this.writeValue(this.range);
-      } else {
-        this.writeValue(event.value);
+    if (!this.formGroupInput) {
+      if (this.type == PickerModeEnum.DATE_RANGE) {
+        if (event.from && event.to) {
+          this.range = event;
+          this.writeValue(this.range);
+        } else {
+          this.writeValue(event.value);
+        }
+      } else if ([PickerModeEnum.DATETIME, PickerModeEnum.DATE].includes(this.type)) {
+        if (event.value) {
+          this.writeValue(event.value);
+        } else {
+          this.dateTimeInput = event;
+          this.writeValue(this.dateTimeInput);
+        }
       }
-    } else if (this.type == PickerModeEnum.DATETIME || this.type == PickerModeEnum.DATE) {
-      if (event.value) {
-        this.writeValue(event.value);
-      } else {
-        this.dateTimeInput = event;
-        this.writeValue(this.dateTimeInput);
-      }
+    } else if ([PickerModeEnum.DATE_RANGE, PickerModeEnum.DATE].includes(this.type) && event?.value) {
+      event.value.utc(true);
     }
   }
 
