@@ -21,22 +21,34 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
 
   /**
    * Modalità di visualizzazione del picker.
+   * @property PickerModeEnum.DATETIME [vaue = 1] - tipologia date time picker
+   * @property PickerModeEnum.DATE [value = 2] - tipologia date picker
+   * @property PickerModeEnum.TIME [value = 3] - tipologia time picker
+   * @property PickerModeEnum.DATE_RANGE [value = 4] - tipologia date range picker
    */
   @Input("type") type: PickerModeEnum = PickerModeEnum.DATE;
 
   /**
-   * Imposta l'input come readonly e l'unico modo per selezionare una data è tramite il picker
+   * Imposta l'input come readonly.
+   * @property {boolean} [default = true]
    */
   @Input("readonlyInput") readonlyInput: boolean = true;
 
   /**
-   * Imposta la data minima e massima
+   * Imposta la data minima inseribile
+   * @property {Date | null} [default = null]
    */
   @Input("minDate") minDate: Date | null = null;
+
+  /**
+   * Imposta la data massima inseribile
+   * @property {Date | null} [default = null]
+   */
   @Input("maxDate") maxDate: Date | null = null;
 
   /**
-   * Imposta l'input come required
+   * Imposta l'input come obbligatorio
+   * @property {boolean} [default = true]
    */
   @Input("isRequired") isRequired: boolean = false;
 
