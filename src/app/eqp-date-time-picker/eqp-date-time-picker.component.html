@@ -35,6 +35,7 @@
     <mat-form-field (click)="DateTimePicker?.open()" floatLabel="never" class="custom-ngx-datetime">
       <input
         matInput
+        (dateChange)="onInputDateChange($event)"
         [ngxMatDatetimePicker]="DateTimePicker"
         [min]="minDate"
         [max]="maxDate"
@@ -114,7 +115,7 @@
       placement="bottom" />
     <mat-icon
       style="width: 24px; height: 24px; margin-right: 6px"
-      (click)="stopProp($event)"
+      (click)="stopProp($event); changeTimeValue = false"
       #p="ngbPopover"
       matSuffix
       placement="bottom-end"
@@ -140,6 +141,11 @@
         (click)="stopProp($event)"
         [(ngModel)]="value"
         (ngModelChange)="changeTime($event, showSeconds)"></ngx-mat-timepicker>
+      <button
+        style="margin-top: 1em; border-radius: 10px; border: 1px solid #e4e4e4"
+        (click)="setValue(); p.close(); stopProp($event)">
+        <mat-icon>check</mat-icon>
+      </button>
     </div>
   </ng-template>
 </div>
@@ -158,7 +164,7 @@
         placement="bottom" />
       <mat-icon
         style="width: 24px; height: 24px; margin-right: 6px"
-        (click)="stopProp($event)"
+        (click)="stopProp($event); changeTimeValue = false"
         #p="ngbPopover"
         matSuffix
         placement="bottom-end"
@@ -184,6 +190,11 @@
         (click)="stopProp($event)"
         [(ngModel)]="value"
         (ngModelChange)="changeTime($event, showSeconds)"></ngx-mat-timepicker>
+      <button
+        style="margin-top: 1em; border-radius: 10px; border: 1px solid #e4e4e4"
+        (click)="setValue(); p.close(); stopProp($event)">
+        <mat-icon>check</mat-icon>
+      </button>
     </div>
   </ng-template>
 </div>

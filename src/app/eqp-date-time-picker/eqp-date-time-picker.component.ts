@@ -124,13 +124,13 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
 
   //#region INSERTED INPUT TRACKET
 
-  /* input trackers */
   range: { from: Date | null; to: Date | null } = { from: null, to: null };
   dateTimeInput: Date | null = null;
-
   tmpTimeInput: string | null | undefined = undefined;
+  changeTimeValue: boolean = true;
 
   //#endregion
+
   constructor(private cd: ChangeDetectorRef) {}
 
   val: any = null;
@@ -164,9 +164,11 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
       }
     }
 
-    this.val = val;
-    this.onChange(val);
-    this.onTouch(val);
+    if (this.changeTimeValue) {
+      this.val = val;
+      this.onChange(val);
+      this.onTouch(val);
+    }
 
     if (this.ngModelInputChange != null && this.type != PickerModeEnum.DATE_RANGE) {
       this.ngModelInput = this.val;
@@ -175,7 +177,32 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   }
 
   ngOnInit(): void {
-    this.onInputDateChange(this.ngModelInput);
+    if (!this.formGroupInput) {
+      this.onInputDateChange(this.ngModelInput);
+    } else {
+      if (this.formControlNameInput) {
+        if (this.type != PickerModeEnum.TIME) {
+          this.formGroupInput
+            .get(this.formControlNameInput)
+            ?.setValue(this.convertDate(this.formGroupInput.get(this.formControlNameInput)?.value));
+        } else {
+          this.value = this.formGroupInput.get(this.formControlNameInput)?.value;
+        }
+      } else if (this.formControlNameInputStart && this.formControlNameInputEnd) {
+        try {
+          this.formGroupInput
+            .get(this.formControlNameInputStart)
+            ?.setValue(this.convertDate(this.formGroupInput.get(this.formControlNameInputStart)?.value));
+
+          this.formGroupInput
+            .get(this.formControlNameInputEnd)
+            ?.setValue(this.convertDate(this.formGroupInput.get(this.formControlNameInputEnd)?.value));
+        } catch (error) {
+          console.log("select the end date");
+        }
+      }
+    }
+
     this.setPlaceholder();
     this.disableComponent();
     this.cd.detectChanges();
@@ -201,8 +228,16 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
           this.writeValue(this.dateTimeInput);
         }
       }
-    } else if ([PickerModeEnum.DATE_RANGE, PickerModeEnum.DATE].includes(this.type) && event?.value) {
-      event.value.utc(true);
+    } else if ([PickerModeEnum.DATE_RANGE, PickerModeEnum.DATE, PickerModeEnum.DATETIME].includes(this.type)) {
+      if (this.formControlNameInput) this.formGroupInput.get(this.formControlNameInput)?.value.utc(true);
+      if (this.formControlNameInputStart && this.formControlNameInputEnd) {
+        try {
+          this.formGroupInput.get(this.formControlNameInputStart)?.value?.utc(true);
+          this.formGroupInput.get(this.formControlNameInputEnd)?.value?.utc(true);
+        } catch (error) {
+          console.log("select the end date");
+        }
+      }
     }
   }
 
@@ -215,6 +250,11 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
       ? event.getHours() + ":" + event.getMinutes() + ":" + event.getSeconds()
       : event.getHours() + ":" + event.getMinutes();
 
+    //this.writeValue(this.tmpTimeInput);
+  }
+
+  setValue() {
+    this.changeTimeValue = true;
     this.writeValue(this.tmpTimeInput);
   }
 
