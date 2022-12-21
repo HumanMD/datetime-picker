@@ -14,6 +14,7 @@ export class AppComponent implements OnInit {
   date: any = new Date();
   range: any = { from: new Date(), to: new Date() };
   disable = false;
+  showSeconds = false;
 
   formGroup = new FormGroup({
     timePickerInputControl: new FormControl(this.timePickerInput),

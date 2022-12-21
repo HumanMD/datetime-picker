@@ -10,7 +10,7 @@
           [(ngModelInput)]="dateTimePickerWithTime"
           [placeholder]="''"
           [isRequired]="true"
-          [showSeconds]="true"></app-eqp-date-time-picker>
+          [showSeconds]="showSeconds"></app-eqp-date-time-picker>
         <p>{{ dateTimePickerWithTime }}</p>
       </div>
       <div class="col-lg-3 col-md-6">
@@ -30,10 +30,10 @@
         <app-eqp-date-time-picker
           [type]="3"
           [disabled]="disable"
-          [(ngModel)]="timePickerInput"
+          [(ngModelInput)]="timePickerInput"
           [placeholder]="''"
           [isRequired]="true"
-          [showSeconds]="true"></app-eqp-date-time-picker>
+          [showSeconds]="showSeconds"></app-eqp-date-time-picker>
         <p>{{ timePickerInput }}</p>
       </div>
       <div class="col-lg-3 col-md-6">
@@ -55,7 +55,7 @@
   <button (click)="onClickSaveDate()" type="submit">save date</button> -->
 </mat-card>
 
-<!-- TEST COMPONENT WIT FORMGRUP -->
+<!-- TEST COMPONENT WITH FORMGRUP -->
 <mat-card>
   <div class="container-fluid">
     <form [formGroup]="formGroup">
@@ -69,7 +69,7 @@
             formControlNameInput="dateTimePickerWithTimeControl"
             [placeholder]="''"
             [isRequired]="true"
-            [showSeconds]="true"></app-eqp-date-time-picker>
+            [showSeconds]="showSeconds"></app-eqp-date-time-picker>
           <p>{{ this.formGroup.get("dateTimePickerWithTimeControl")?.value }}</p>
         </div>
         <div class="col-lg-3 col-md-6">
@@ -95,7 +95,7 @@
             formControlNameInput="timePickerInputControl"
             [placeholder]="''"
             [isRequired]="true"
-            [showSeconds]="true"></app-eqp-date-time-picker>
+            [showSeconds]="showSeconds"></app-eqp-date-time-picker>
           <p>{{ this.formGroup.get("timePickerInputControl")?.value }}</p>
         </div>
         <div class="col-lg-3 col-md-6">
@@ -105,7 +105,7 @@
             [disabled]="disable"
             [formGroupInput]="formGroup"
             formControlNameInput="dateControl"
-            [isRequired]="true"
+            [isRequired]="false"
             [placeholder]="''"></app-eqp-date-time-picker>
           <p>{{ this.formGroup.get("dateControl")?.value }}</p>
         </div>

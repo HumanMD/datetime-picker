@@ -53,45 +53,58 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   @Input("isRequired") isRequired: boolean = false;
 
   /**
-   * Da specificare in caso di utilizzo di formControlName, il nome del formGroup utilizzato nel tag <form>
+   * Da specificare in caso di utilizzo di formControlName, il nome del formGroup utilizzato nel tag <form>.
+   * Da utilizzare solo se non viene usato il binding tramite ngModelInput.
+   * @property {FormGroup | null} [default = null]
    */
   @Input("formGroupInput") formGroupInput: FormGroup | null = null;
 
   /**
-   * Nome del formControl da utilizzare (in tutti i casi tranne che per RANGE_DATE)
+   * Nome del formControl da utilizzare (in tutti i casi tranne che per RANGE_DATE).
+   * Da utilizzare solo se non viene usato il binding tramite ngModelInput
+   * @property {string | null} [default = null]
    */
   @Input("formControlNameInput") formControlNameInput: string | null = null;
 
   /**
-   * Nome del formControlName da utilizzare per RANGE_DATE
+   * Nome del formControlName da utilizzare per RANGE_DATE (data inizio).
+   * Da utilizzare solo se non viene usato il binding tramite ngModelInput
+   * @property {string | null} [default = null]
    */
   @Input("formControlNameInputStart") formControlNameInputStart: string | null = null;
 
   /**
-   * Nome del formControlName da utilizzare per RANGE_DATE
+   * Nome del formControlName da utilizzare per RANGE_DATE (data fine).
+   * Da utilizzare solo se non viene usato il binding tramite ngModelInput
+   * @property {string | null} [default = null]
    */
   @Input("formControlNameInputEnd") formControlNameInputEnd: string | null = null;
 
   /**
-   * Placeholder visualizzato nel campo di input della data/data e orario/orario.
-   */
-  @Input("placeholder") placeholder: string = "";
-
-  /**
-   * Placeholder visualizzati nel campo di input del range di date.
-   */
-  @Input("startPlaceholeder") startPlaceholeder: string = "";
-  @Input("endPlaceholeder") endPlaceholeder: string = "";
-
-  /**
-   * ngModel da bindare nel campo di input della data/data e orario/orario
+   * ngModel da bindare per tutte le tipologie di picker.
+   * Da utilizzare solo se non viene usato il binding tramite FormGroup e FormControl
    */
   @Input("ngModelInput") ngModelInput: Date | string | null = null;
 
   /**
-   * ngModel da bindare nel campo di input della data/data e orario/orario
+   * Placeholder visualizzato in caso di DATE, DATETIME, TIME.
+   * @property {string} [default_DATE = "Seleziona una data"]
+   * @property {string} [default_DATETIME = "Seleziona una data e un orario"]
+   * @property {string} [default_TIME = "Seleziona un orario"]
    */
-  @Input("initialValue") initialValue: Date | string | null = null;
+  @Input("placeholder") placeholder: string = "";
+
+  /**
+   * Placeholder visualizzato in caso di DARE_RANGE (data inizio).
+   * @property {string} [default_DARE_RANGE_start = "Seleziona date inizio"]
+   */
+  @Input("startPlaceholeder") startPlaceholeder: string = "";
+
+  /**
+   * Placeholder visualizzato in caso di DARE_RANGE (data fine).
+   * @property {string} [default_DARE_RANGE_end = "fine"]
+   */
+  @Input("endPlaceholeder") endPlaceholeder: string = "";
 
   /**
    * Input dei componenti ngx-mat-datetime-picker e ngx-mat-timepicker.
@@ -232,7 +245,7 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
         } else {
           this.writeValue(event.value);
         }
-      } else if ([PickerModeEnum.DATETIME, PickerModeEnum.DATE].includes(this.type)) {
+      } else if ([PickerModeEnum.DATETIME, PickerModeEnum.DATE, PickerModeEnum.TIME].includes(this.type)) {
         if (event.value) {
           this.writeValue(event.value);
         } else {
@@ -288,15 +301,14 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   }
 
   /***
-   * manage the daisable of the component when it's used inside a orm group
+   * manage the daisable of the component when it's used inside a form group
    **/
   disableComponent() {
-    if (!this.disabled && this.formGroupInput && this.formControlNameInput) {
-      if (this.formControlNameInput)
-        this.disabled =
-          this.formGroupInput.disabled || this.formGroupInput.controls[this.formControlNameInput].disabled;
-    } else if (this.disabled && this.formGroupInput && this.formControlNameInput)
-      if (this.formControlNameInput) this.disabled = this.formGroupInput.disabled;
+    if (this.disabled && this.formGroupInput) {
+      if (this.formControlNameInput) {
+        this.formGroupInput.get(this.formControlNameInput)?.disable();
+      }
+    }
   }
 
   //#region HELPER FUNCTIONS
