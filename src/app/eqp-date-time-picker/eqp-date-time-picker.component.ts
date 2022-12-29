@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, OnInit, 
 import { ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { ThemePalette } from "@angular/material/core";
 import * as moment from "moment";
-import { BehaviorSubject } from "rxjs";
 
 @Component({
   selector: "app-eqp-date-time-picker",
@@ -48,7 +47,7 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
 
   /**
    * Imposta l'input come obbligatorio
-   * @property {boolean} [default = true]
+   * @property {boolean} [default = false]
    */
   @Input("isRequired") isRequired: boolean = false;
 
@@ -81,8 +80,8 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   @Input("formControlNameInputEnd") formControlNameInputEnd: string | null = null;
 
   /**
-   * ngModel da bindare per tutte le tipologie di picker.
-   * Da utilizzare solo se non viene usato il binding tramite FormGroup e FormControl
+   * ngModel da bindare per tutte le tipologie di picker. Da utilizzare solo se non viene usato il binding tramite FormGroup e FormControl
+   * @property {Date | string | null} [default = null]
    */
   @Input("ngModelInput") ngModelInput: Date | string | null = null;
 
@@ -96,7 +95,7 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
 
   /**
    * Placeholder visualizzato in caso di DARE_RANGE (data inizio).
-   * @property {string} [default_DARE_RANGE_start = "Seleziona date inizio"]
+   * @property {string} [default_DARE_RANGE_start = "Seleziona data inizio"]
    */
   @Input("startPlaceholeder") startPlaceholeder: string = "";
 
@@ -107,35 +106,71 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   @Input("endPlaceholeder") endPlaceholeder: string = "";
 
   /**
-   * Input dei componenti ngx-mat-datetime-picker e ngx-mat-timepicker.
-   * Per dettagli seguire la guida al link: "https://www.npmjs.com/package/@angular-material-components/datetime-picker"
+   * Disabilitazione dell'input
+   * @property {boolean} [default = false]
    */
   @Input("disabled") disabled: boolean = false;
+
+  /**
+   * Se impostato a false, l'orario può essere inserito solamente
+   * tramite input numerico di tastiera.
+   * Usato nei pickerdi tipo TIME e DATETIME
+   * @property {boolean} [default = true]
+   */
   @Input("showSpinners") showSpinners: boolean = true;
-  @Input("showSeconds") showSeconds: boolean = false;
+
+  /**
+   * Visualizzazione del campo 'secondi' per i picker TIME e DATETIME
+   * @property {boolean} [default = true]
+   */
+  @Input("showSeconds") showSeconds: boolean = true;
+
+  /**
+   * Disabilita l'inserimento del campo 'minuti' per i picker TIME e DATETIME
+   * @property {boolean} [default = false]
+   */
   @Input("disableMinute") disableMinute: boolean = false;
-  //@Input("defaultTime") defaultTime: Array<any> | undefined = undefined;
+
+  /**
+   * Intervallo di ore al momento dell'inserimento per i picker TIME e DATETIME
+   * @property {number} [default = 1]
+   */
   @Input("stepHour") stepHour: number = 1;
+
+  /**
+   * Intervallo di minuti al momento dell'inserimento per i picker TIME e DATETIME
+   * @property {number} [default = 1]
+   */
   @Input("stepMinute") stepMinute: number = 1;
+
+  /**
+   * Intervallo di secondi al momento dell'inserimento per i picker TIME e DATETIME
+   * @property {number} [default = 1]
+   */
   @Input("stepSecond") stepSecond: number = 1;
+
+  /**
+   * Colore della data selezionata in caso di DATE, DATETIME, DATE_RANGE.
+   * @property {string} [vaue = 'primary'] - blu
+   * @property {string} [vaue = 'accent'] - giallo
+   * @property {string} [vaue = 'warn'] - rosso
+   * @property [default = undefined] - blu
+   */
   @Input("color") color: ThemePalette = undefined;
+
+  /**
+   * Imposta l'inserimento dell'orario nel formato 24H o AM/PM per i picker TIME e DATETIME
+   * @property {boolean} [default = false] - 24H
+   */
   @Input("enableMeridian") enableMeridian: boolean = false;
+
+  /**
+   * Imposta la visualizzazione del picker come finestra modale per i picker DATE, DATETIME, DATE_RANGE
+   * @property {boolean} [default = false]
+   */
   @Input("touchUi") touchUi: boolean = false;
-  hideTime: boolean = false;
 
-  private _data = new BehaviorSubject<any[]>([]);
-
-  // change data to use getter and setter
-  @Input()
-  set data(value) {
-    // set the latest value for _data BehaviorSubject
-    this._data.next(value);
-  }
-
-  get data() {
-    // get the latest value from _data BehaviorSubject
-    return this._data.getValue();
-  }
+  //@Input("defaultTime") defaultTime: Array<any> | undefined = undefined;
 
   //#endregion
 
@@ -157,6 +192,8 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   //#endregion
 
   constructor(private cd: ChangeDetectorRef) {}
+
+  //#region ControlValueAccessor
 
   val: any = null;
   onChange: any = (event: any) => {
@@ -201,7 +238,10 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
     }
   }
 
+  //#endregion
+
   ngOnInit(): void {
+    /* In base alla tipologia del picker e la tipologia del binding, applico il valore iniziale dell'input */
     if (!this.formGroupInput) {
       this.onInputDateChange(this.ngModelInput);
     } else {
@@ -228,14 +268,16 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
       }
     }
 
+    /* richiamo la funzione per definire i placeholder in base alla tipologia di picker*/
     this.setPlaceholder();
+    /* gestisco la disabilitazione dell'input */
     this.disableComponent();
     this.cd.detectChanges();
   }
 
-  /***
-   * function to track input changes for DATE_RANGE picker mode:
-   **/
+  /**
+   * Funzione che gestisce la modifiche del picker in base alla tipologia del picker, del binding
+   */
   onInputDateChange(event: any) {
     if (!this.formGroupInput) {
       if (this.type == PickerModeEnum.DATE_RANGE) {
@@ -266,43 +308,43 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
     }
   }
 
-  /***
-   * this function update the time string hh:MM or hh:MM:ss
-   **/
+  /**
+   * Funzione che estrae dalla data la stringa con hh:mm:ss o solo hh:mm (se l'input showSeconds = false)
+   */
   changeTime(event: Date, showSeconds: boolean) {
     event = new Date(event);
     this.tmpTimeInput = showSeconds
       ? event.getHours() + ":" + event.getMinutes() + ":" + event.getSeconds()
       : event.getHours() + ":" + event.getMinutes();
-
-    //this.writeValue(this.tmpTimeInput);
   }
 
+  /**
+   * Funzione che va a scrivere il nuovo valore del TIME picker dopo la conferma dell'orario scelto
+   */
   setValue() {
     this.changeTimeValue = true;
     this.writeValue(this.tmpTimeInput);
   }
 
-  /***
-   * function called on init to set the placeholders based on picker type.
-   * if the picker type is DATE_RANGE and isRequired is true, the endPlaceholeder
-   * ll'have * at the end of it
-   **/
+  /**
+   * Funzione richiamata all'init del componente per definire i placeholder in base alla tipologia di picker.
+   * Nel caso la tipologia sia DATE_RANGE e l'input isRequired = true, il placeholder avrà alla sua fine il simbolo *
+   */
   setPlaceholder() {
     if (this.type != PickerModeEnum.DATE_RANGE && this.placeholder == "") {
       if (this.type == PickerModeEnum.DATE) this.placeholder = "Seleziona una data";
       else if (this.type == PickerModeEnum.DATETIME) this.placeholder = "Seleziona una data e un orario";
       else if (this.type == PickerModeEnum.TIME) this.placeholder = "Seleziona un orario";
     } else if (this.type == PickerModeEnum.DATE_RANGE) {
-      if (this.startPlaceholeder == "") this.startPlaceholeder = "Seleziona date inizio";
+      if (this.startPlaceholeder == "") this.startPlaceholeder = "Seleziona data inizio";
       if (this.endPlaceholeder == "") this.endPlaceholeder = "fine";
       if (this.isRequired) this.endPlaceholeder = this.endPlaceholeder.concat(" *");
     }
   }
 
-  /***
-   * manage the daisable of the component when it's used inside a form group
-   **/
+  /**
+   * Funzione che gestisce la disabilitazione del componente quando è usato in un formGroup
+   */
   disableComponent() {
     if (this.disabled && this.formGroupInput) {
       if (this.formControlNameInput) {

@@ -17,7 +17,6 @@
       #DateTimePicker
       [showSpinners]="showSpinners"
       [showSeconds]="showSeconds"
-      [hideTime]="hideTime"
       [disabled]="disabled"
       [disableMinute]="disableMinute"
       [stepHour]="stepHour"
@@ -49,7 +48,6 @@
         #DateTimePicker
         [showSpinners]="showSpinners"
         [showSeconds]="showSeconds"
-        [hideTime]="hideTime"
         [disabled]="disabled"
         [disableMinute]="disableMinute"
         [stepHour]="stepHour"
@@ -137,7 +135,6 @@
         [stepHour]="stepHour"
         [stepMinute]="stepMinute"
         [stepSecond]="stepSecond"
-        [color]="color"
         [enableMeridian]="enableMeridian"
         (click)="stopProp($event)"
         [(ngModel)]="value"
@@ -188,7 +185,6 @@
         [stepHour]="stepHour"
         [stepMinute]="stepMinute"
         [stepSecond]="stepSecond"
-        [color]="color"
         [enableMeridian]="enableMeridian"
         (click)="stopProp($event)"
         [(ngModel)]="value"
@@ -229,7 +225,7 @@
         [required]="isRequired" />
     </mat-date-range-input>
     <mat-datepicker-toggle class="toggle-button" matIconSuffix [for]="DatrRangePicker"></mat-datepicker-toggle>
-    <mat-date-range-picker #DatrRangePicker></mat-date-range-picker>
+    <mat-date-range-picker #DatrRangePicker [color]="color" [touchUi]="touchUi"></mat-date-range-picker>
   </mat-form-field>
 </div>
 <!-- MATERIAL DATE RANGE PICKER (FORM CONTROL) -->
@@ -258,6 +254,6 @@
         [required]="isRequired" />
     </mat-date-range-input>
     <mat-datepicker-toggle class="toggle-button" matIconSuffix [for]="DatrRangePicker"></mat-datepicker-toggle>
-    <mat-date-range-picker #DatrRangePicker></mat-date-range-picker>
+    <mat-date-range-picker #DatrRangePicker [color]="color" [touchUi]="touchUi"></mat-date-range-picker>
   </mat-form-field>
 </div>
