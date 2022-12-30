@@ -9,12 +9,19 @@ import { FormControl, FormGroup } from "@angular/forms";
   styleUrls: ["./app.component.scss"]
 })
 export class AppComponent implements OnInit {
-  timePickerInput: any = "14:11:14";
+  /* timePickerInput: any = "14:11:14";
   dateTimePickerWithTime: any = new Date();
   date: any = new Date();
-  range: any = { from: new Date(), to: new Date() };
+  range: any = { from: new Date(), to: new Date() }; */
+
+  timePickerInput: any = null;
+  dateTimePickerWithTime: any = null;
+  date: any = null;
+  range: any = { from: null, to: null };
+
   disable = false;
   showSeconds = false;
+  isRequired = true;
 
   formGroup = new FormGroup({
     timePickerInputControl: new FormControl(this.timePickerInput),

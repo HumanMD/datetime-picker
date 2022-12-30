@@ -241,38 +241,17 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   //#endregion
 
   ngOnInit(): void {
-    /* In base alla tipologia del picker e la tipologia del binding, applico il valore iniziale dell'input */
-    if (!this.formGroupInput) {
-      this.onInputDateChange(this.ngModelInput);
-    } else {
-      if (this.formControlNameInput) {
-        if (this.type != PickerModeEnum.TIME) {
-          this.formGroupInput
-            .get(this.formControlNameInput)
-            ?.setValue(this.convertDate(this.formGroupInput.get(this.formControlNameInput)?.value));
-        } else {
-          this.value = this.formGroupInput.get(this.formControlNameInput)?.value;
-        }
-      } else if (this.formControlNameInputStart && this.formControlNameInputEnd) {
-        try {
-          this.formGroupInput
-            .get(this.formControlNameInputStart)
-            ?.setValue(this.convertDate(this.formGroupInput.get(this.formControlNameInputStart)?.value));
-
-          this.formGroupInput
-            .get(this.formControlNameInputEnd)
-            ?.setValue(this.convertDate(this.formGroupInput.get(this.formControlNameInputEnd)?.value));
-        } catch (error) {
-          console.log("select the end date");
-        }
-      }
+    try {
+      /* In base alla tipologia del picker e la tipologia del binding, applico il valore iniziale dell'input */
+      this.checkValueOnInit();
+      /* richiamo la funzione per definire i placeholder in base alla tipologia di picker*/
+      this.setPlaceholder();
+      /* gestisco la disabilitazione dell'input */
+      this.disableComponent();
+      this.cd.detectChanges();
+    } catch (error) {
+      console.log(error);
     }
-
-    /* richiamo la funzione per definire i placeholder in base alla tipologia di picker*/
-    this.setPlaceholder();
-    /* gestisco la disabilitazione dell'input */
-    this.disableComponent();
-    this.cd.detectChanges();
   }
 
   /**
@@ -281,14 +260,14 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   onInputDateChange(event: any) {
     if (!this.formGroupInput) {
       if (this.type == PickerModeEnum.DATE_RANGE) {
-        if (event.from && event.to) {
+        if (event?.from && event?.to) {
           this.range = event;
           this.writeValue(this.range);
         } else {
           this.writeValue(event.value);
         }
       } else if ([PickerModeEnum.DATETIME, PickerModeEnum.DATE, PickerModeEnum.TIME].includes(this.type)) {
-        if (event.value) {
+        if (event?.value) {
           this.writeValue(event.value);
         } else {
           this.dateTimeInput = event;
@@ -354,6 +333,49 @@ export class EqpDateTimePickerComponent implements OnInit, ControlValueAccessor 
   }
 
   //#region HELPER FUNCTIONS
+
+  checkValueOnInit() {
+    if (!this.formGroupInput) {
+      if (this.ngModelInput) {
+        let initialValue: any = this.ngModelInput;
+        if (initialValue?.from == null) {
+          initialValue.from = ".";
+        }
+        if (initialValue?.to == null) {
+          initialValue.to = ".";
+        }
+        this.onInputDateChange(initialValue);
+      }
+    } else {
+      if (this.formControlNameInput) {
+        if (this.type != PickerModeEnum.TIME && this.formGroupInput.get(this.formControlNameInput)?.value) {
+          this.formGroupInput
+            .get(this.formControlNameInput)
+            ?.setValue(this.convertDate(this.formGroupInput.get(this.formControlNameInput)?.value));
+        } else {
+          this.value = this.formGroupInput.get(this.formControlNameInput)?.value;
+        }
+      } else if (
+        this.formControlNameInputStart &&
+        this.formControlNameInputEnd &&
+        this.formGroupInput.get(this.formControlNameInputStart)?.value &&
+        this.formGroupInput.get(this.formControlNameInputEnd)
+      ) {
+        try {
+          this.formGroupInput
+            .get(this.formControlNameInputStart)
+            ?.setValue(this.convertDate(this.formGroupInput.get(this.formControlNameInputStart)?.value));
+
+          this.formGroupInput
+            .get(this.formControlNameInputEnd)
+            ?.setValue(this.convertDate(this.formGroupInput.get(this.formControlNameInputEnd)?.value));
+        } catch (error) {
+          console.log("select the end date");
+        }
+      }
+    }
+  }
+
   stopProp(e: Event) {
     e.stopPropagation();
   }

@@ -1,4 +1,8 @@
 ::ng-deep .custom-ngx-datetime {
+  cursor: pointer !important;
+  input {
+    cursor: pointer;
+  }
   width: 100% !important;
   .mat-form-field-infix {
     position: inherit;
@@ -14,6 +18,10 @@
 }
 
 ::ng-deep .custom-mat-date {
+  cursor: pointer !important;
+  input {
+    cursor: pointer;
+  }
   width: 100% !important;
   .mat-form-field-infix {
     display: flex;
@@ -25,17 +33,26 @@
 }
 
 ::ng-deep .custom-ngx-time {
+  cursor: pointer !important;
+  input {
+    cursor: pointer;
+  }
   width: 100% !important;
   .mat-form-field-infix {
     position: inherit;
   }
   .mat-form-field-suffix {
+    cursor: pointer;
     align-self: center;
     color: #6c757d;
   }
 }
 
 ::ng-deep .custom-mat-daterange {
+  cursor: pointer !important;
+  input {
+    cursor: pointer;
+  }
   width: 100% !important;
   .mat-form-field-infix {
     display: flex;
